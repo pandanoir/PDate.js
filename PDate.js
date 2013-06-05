@@ -2,10 +2,10 @@ var PDate=(function(){
 	var PDate=function(date){
 		this.baseDate=date;
 	}
+	PDate.fn=PDate.prototype;
 	PDate.fn.Date=function(){
 		return this.baseDate||new Date;
 	}
-	PDate.fn=PDate.prototype;
 	PDate.fn.year=function(){return this.Date().getFullYear();}
 	PDate.fn.month=function(){return this.Date().getMonth()+1;}
 	PDate.fn.date=function(){return this.Date().getDate();}
@@ -22,6 +22,46 @@ var PDate=(function(){
 		return jaDay[this.Date().getDay()];
 		}else{
 		return this.Date().getDay();
+		}
+	}
+	PDate.fn.deg=function(key){
+		//その時刻の際のアナログ時計の角度(度)
+		switch(key){
+			case "hour":
+			case "hou":
+				return ((this.hou()*60*60*1000+this.min()*60*1000+this.sec()*1000+this.msec())/120000-90)//(360/12/60/60/1000*(this.hou()*60*60*1000+this.min()*60*1000+this.sec()*1000+this.msec())-90)
+			case "min":
+			case "minute":
+				return ((this.min()*60*1000+this.sec()*1000+this.msec())/10000-90)//(360/60/60/1000*(this.min()*60*1000+this.sec()*1000+this.msec())-90)
+			case "sec":
+			case "second":
+				return ((this.sec()*1000+this.msec())*3/500-90)//(360/60/1000*(this..sec()*1000+this.msec())-90)
+			case "millisecond":
+			case "msec":
+			case "millisec":
+				return (this.msec()*9/25-90)//(360/1000*(this.msec())-90)
+			default:
+				return false;
+		}
+	}
+	PDate.fn.rad=function(key){
+		//その時刻の際のアナログ時計の角度(ラジアン)。どちらかといえばこちらのほうが使いやすい。三角関数にそのまま渡せるし
+		switch(key){
+			case "hour":
+			case "hou":
+				return ((this.hou()*60*60*1000+this.min()*60*1000+this.sec()*1000+this.msec())/120000-90)/180*Math.PI//(360/12/60/60/1000*(this.hou()*60*60*1000+this.min()*60*1000+this.sec()*1000+this.msec())-90)/180*Math.PI
+			case "min":
+			case "minute":
+				return ((this.min()*60*1000+this.sec()*1000+this.msec())/10000-90)/180*Math.PI//(360/60/60/1000*(this.min()*60*1000+this.sec()*1000+this.msec())-90)/180*Math.PI
+			case "sec":
+			case "second":
+				return ((this.sec()*1000+this.msec())*3/500-90)/180*Math.PI//(360/60/1000*(this..sec()*1000+this.msec())-90)/180*Math.PI
+			case "millisecond":
+			case "msec":
+			case "millisec":
+				return (this.msec()*9/25-90)/180*Math.PI//(360/1000*(this.msec())-90)/180*Math.PI
+			default:
+				return false;
 		}
 	}
 	PDate.fn.show=function(str){
