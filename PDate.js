@@ -29,10 +29,10 @@ var PDate=(function(){
 		switch(key){
 			case "hour":
 			case "hou":
-				return ((this.hou()*60*60*1000+this.min()*60*1000+this.sec()*1000+this.msec())/120000-90)//(360/12/60/60/1000*(this.hou()*60*60*1000+this.min()*60*1000+this.sec()*1000+this.msec())-90)
+				return ((this.hou()*3600000+this.min()*60000+this.sec()*1000+this.msec())/120000-90)//(360/12/60/60/1000*(this.hou()*60*60*1000+this.min()*60*1000+this.sec()*1000+this.msec())-90)
 			case "min":
 			case "minute":
-				return ((this.min()*60*1000+this.sec()*1000+this.msec())/10000-90)//(360/60/60/1000*(this.min()*60*1000+this.sec()*1000+this.msec())-90)
+				return ((this.min()*60000+this.sec()*1000+this.msec())/10000-90)//(360/60/60/1000*(this.min()*60*1000+this.sec()*1000+this.msec())-90)
 			case "sec":
 			case "second":
 				return ((this.sec()*1000+this.msec())*3/500-90)//(360/60/1000*(this..sec()*1000+this.msec())-90)
@@ -49,10 +49,11 @@ var PDate=(function(){
 		switch(key){
 			case "hour":
 			case "hou":
-				return ((this.hou()*60*60*1000+this.min()*60*1000+this.sec()*1000+this.msec())/120000-90)/180*Math.PI//(360/12/60/60/1000*(this.hou()*60*60*1000+this.min()*60*1000+this.sec()*1000+this.msec())-90)/180*Math.PI
+				return ((this.hou()*3600000+this.min()*60000+this.sec()*1000+this.msec())/120000-90)/180*Math.PI//(360/12/60/60/1000*(this.hou()*60*60*1000+this.min()*60*1000+this.sec()*1000+this.msec())-90)/180*Math.PI
+				
 			case "min":
 			case "minute":
-				return ((this.min()*60*1000+this.sec()*1000+this.msec())/10000-90)/180*Math.PI//(360/60/60/1000*(this.min()*60*1000+this.sec()*1000+this.msec())-90)/180*Math.PI
+				return ((this.min()*60000+this.sec()*1000+this.msec())/10000-90)/180*Math.PI//(360/60/60/1000*(this.min()*60*1000+this.sec()*1000+this.msec())-90)/180*Math.PI
 			case "sec":
 			case "second":
 				return ((this.sec()*1000+this.msec())*3/500-90)/180*Math.PI//(360/60/1000*(this..sec()*1000+this.msec())-90)/180*Math.PI
