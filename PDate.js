@@ -13,6 +13,9 @@ var PDate=(function(){
 	PDate.fn.minute=PDate.fn.min=function(){return this.Date().getMinutes();}
 	PDate.fn.hour=PDate.fn.hou=function(){return this.Date().getHours();}
 	PDate.fn.millisecond=PDate.fn.msec=PDate.fn.millisec=function(){return this.Date().getMilliseconds();}
+	PDate.fn.minus=function(number){
+		return new PTime(this.Date()-number.Date());
+	}
 	PDate.fn.day=function(language){
 		var enDay=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 		var jaDay=["日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","土曜日"];
@@ -134,48 +137,43 @@ var PDate=(function(){
 	return PDate;
 })();
 var PTime=(function(){
-	var PTime=function(date1,date2){
-		this.date1=date1
-		this.date2=date2||new Date();
+	var PTime=function(time){
+		this.time=time
 	}
 	PTime.fn=PTime.prototype;
-	PTime.fn.Date=function(){return this.date1.Date()-this.date2.Date()};
 	PTime.fn.date=function(){
-		return this.Date()/86400000//this.Date()/1000/60/60/24
+		return (this.time/86400000|0)>0?this.time/86400000|0:(this.time/86400000|0)*-1//this.time/1000/60/60/24
 	}
-	PTime.fn.second=PTime.fn.sec=function(){return (this.Date()%60000/60|0)*60;}//1000*60
-	PTime.fn.minute=PTime.fn.min=function(){return (this.Date()%3600000/60|0)*60;}//1000*60*60
-	PTime.fn.hour=PTime.fn.hou=function(){return (this.Date()%86400000/12|0)*12;}//1000*60*60*24=
-	PTime.fn.millisecond=PTime.fn.msec=PTime.fn.millisec=function(){return this.Date()}
+	PTime.fn.second=PTime.fn.sec=function(){return ((this.time/1000)%60|0)>0?(this.time/1000)%60|0:((this.time/1000)%60|0)*-1;}//1000
+	PTime.fn.minute=PTime.fn.min=function(){return ((this.time/60000)%60|0)>0?(this.time/60000)%60|0:((this.time/60000)%60|0)*-1;}//1000*60
+	PTime.fn.hour=PTime.fn.hou=function(){return ((this.time/3600000)%12|0)>0?(this.time/3600000)%24|0:((this.time/3600000)%24|0)*-1;}//1000*60*60
+	PTime.fn.millisecond=PTime.fn.msec=PTime.fn.millisec=function(){return this.time%1000}
 	PTime.fn.only=function(key){
 		switch(key){
 			case "sec":case "second":
-				return this.Date()/1000|0;
+				return this.time/1000|0;
 			case "min":case "minute":
-				return this.Date()/60000|0;//60*1000
+				return this.time/60000|0;//60*1000
 			case "hou":case "hour":
-				return this.Date()/3600000|0;//60*60*1000
+				return this.time/3600000|0;//60*60*1000
 			case "millisecond":case "msec":case "millisec":
-				return this.Date();
+				return this.time;
 		}
 	}
-	PTime.fn.show=function(str){
+	PTime.fn.show=function(str1,str2){
+		var str="";
+		if(this.time>0) str=str1;
+		else str=str2;
 		var result="";
 		for(var i=0,j=str.length;i<j;i++){
 			switch(str.charAt(i)){
 			case "j":
 				result+=this.date()//ゼロフィルなしの日付
 				break;
-			case "g":
-				result+=this.hour()%12//ゼロフィルなしの時間(12時間単位)
-				break;
-			case "G":
+			case "g":case "G":
 				result+=this.hour()//ゼロフィルなしの時間(24時間単位)
 				break;
-			case "h":
-				result+=("00"+this.hour()%12).slice(-2)//ゼロフィルありの時間(12時間単位)
-				break;
-			case "H":
+			case "h":case "H":
 				result+=("00"+this.hour()).slice(-2)//ゼロフィルありの時間(24時間単位)
 				break;
 			case "i":
