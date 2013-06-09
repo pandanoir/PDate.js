@@ -133,3 +133,62 @@ var PDate=(function(){
 	}
 	return PDate;
 })();
+var PTime=(function(){
+	var PTime=function(date1,date2){
+		this.date1=date1
+		this.date2=date2||new Date();
+	}
+	PTime.fn=PTime.prototype;
+	PTime.fn.Date=function(){return this.date1.Date()-this.date2.Date()};
+	PTime.fn.date=function(){
+		return this.Date()/86400000//this.Date()/1000/60/60/24
+	}
+	PTime.fn.second=PTime.fn.sec=function(){return (this.Date()%60000/60|0)*60;}//1000*60
+	PTime.fn.minute=PTime.fn.min=function(){return (this.Date()%3600000/60|0)*60;}//1000*60*60
+	PTime.fn.hour=PTime.fn.hou=function(){return (this.Date()%86400000/12|0)*12;}//1000*60*60*24=
+	PTime.fn.millisecond=PTime.fn.msec=PTime.fn.millisec=function(){return this.Date()}
+	PTime.fn.only=function(key){
+		switch(key){
+			case "sec":case "second":
+				return this.Date()/1000|0;
+			case "min":case "minute":
+				return this.Date()/60000|0;//60*1000
+			case "hou":case "hour":
+				return this.Date()/3600000|0;//60*60*1000
+			case "millisecond":case "msec":case "millisec":
+				return this.Date();
+		}
+	}
+	PTime.fn.show=function(str){
+		var result="";
+		for(var i=0,j=str.length;i<j;i++){
+			switch(str.charAt(i)){
+			case "j":
+				result+=this.date()//ゼロフィルなしの日付
+				break;
+			case "g":
+				result+=this.hour()%12//ゼロフィルなしの時間(12時間単位)
+				break;
+			case "G":
+				result+=this.hour()//ゼロフィルなしの時間(24時間単位)
+				break;
+			case "h":
+				result+=("00"+this.hour()%12).slice(-2)//ゼロフィルありの時間(12時間単位)
+				break;
+			case "H":
+				result+=("00"+this.hour()).slice(-2)//ゼロフィルありの時間(24時間単位)
+				break;
+			case "i":
+				result+=("00"+this.min()).slice(-2)//ゼロフィルありの分
+				break;
+			case "s":
+				result+=("00"+this.sec()).slice(-2)//ゼロフィルありの秒
+				break;
+			default:
+				result+=str.charAt(i)
+			}
+		}
+		return result
+	}
+	return PTime;
+})();
