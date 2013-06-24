@@ -59,51 +59,36 @@ var PDate=(function(){
 		}
 	}
 	PDate.fn.show=function(str){
-		var result="";
-		for(var i=0,j=str.length;i<j;i++){
-			switch(str.charAt(i)){
-			case "Y":result+=this.year()//4桁の年
-				break;
-			case "y":result+=this.year().toString().slice(-2)//2桁の年
-				break;
-			case "m":result+=("00"+this.month()).slice(-2)//ゼロフィルありの月
-				break;
-			case "n":result+=this.month()//ゼロフィルなしの月
-				break;
-			case "d":result+=("00"+this.date()).slice(-2)//ゼロフィルありの日付
-				break;
-			case "j":result+=this.date()//ゼロフィルなしの日付
-				break;
-			case "S":var ordinal=["st","nd","rd","th","th","th","th","th","th","th"];
-				if(this.date()%100>10&&this.date()%100<20)result+="th";
-				else result+=ordinal[this.date()%10];//曜日の序数詞。1stみたいな
-				break;
-			case "D":result+=this.day("en").toString().slice(0,3)//曜日短縮版
-				break;
-			case "l":result+=this.day("en")//曜日フルスペル
-				break;
-			case "w":result+=this.day()//曜日。数値
-				break;
-			case "g":result+=this.hour()%12//ゼロフィルなしの時間(12時間単位)
-				break;
-			case "G":result+=this.hour()//ゼロフィルなしの時間(24時間単位)
-				break;
-			case "h":result+=("00"+this.hour()%12).slice(-2)//ゼロフィルありの時間(12時間単位)
-				break;
-			case "H":result+=("00"+this.hour()).slice(-2)//ゼロフィルありの時間(24時間単位)
-				break;
-			case "i":result+=("00"+this.min()).slice(-2)//ゼロフィルありの分
-				break;
-			case "s":result+=("00"+this.sec()).slice(-2)//ゼロフィルありの秒
-				break;
-			case "a":result+= this.hour<12?"am":"pm";//午前か午後か(小文字)
-				break;
-			case "A":result+=this.hour<12?"AM":"PM";//午前か午後か(大文字)
-				break;
-			default:result+=str.charAt(i)
+		var that=this;
+		str=str.replace(/(\\*?)\[(yyyy|yy|mm|nn|dd|d|S|DD|D|hh|HH|H|milli3|milli2|milli1|m|s|a|A)\]/g,function(a,slashes,key){
+			if(slashes.length%2==0) return a;
+			switch(key){
+				case "yyyy": return that.year()//4桁の年
+				case "yy": return that.year().toString().slice(-2);//2桁の年
+				case "mm": return ("00"+that.month()).slice(-2);//ゼロフィルありの月
+				case "nn": return that.month;//ゼロフィルなしの月
+				case "dd": return ("00"+that.date()).slice(-2);//ゼロフィルありの日付
+				case "d": return that.date();//ゼロフィルなしの日付
+				case "S":
+					var ordinal=["st","nd","rd","th","th","th","th","th","th","th"];
+					if(that.date()%100>10&&that.date()%100<20) return "th";
+					else return ordinal[that.date()%10];//曜日の序数詞。1stみたいな
+				case "DD": return that.day("en");//曜日フルスペル
+				case "D": return that.day("en").toString().slice(0,3);//曜日短縮版
+				case "hh": return ("00"+that.hour()%12).slice(-2);//ゼロフィルありの時間(12時間単位)
+				case "HH": return ("00"+that.hour()).slice(-2);//ゼロフィルありの時間(24時間単位)
+				case "h": return that.hour()%12;//ゼロフィルなしの時間(12時間単位)
+				case "H": return that.hour();//ゼロフィルなしの時間(24時間単位)
+				case "milli3": return ("0000"+that.msec()).slice(-3);//ゼロフィルありのミリ秒
+				case "milli2": return ("0000"+that.msec()).slice(-2);//ゼロフィルありのミリ秒
+				case "milli1": return ("0000"+that.msec()).slice(-1);//ゼロフィルありのミリ秒
+				case "m": return ("00"+that.min()).slice(-2);//ゼロフィルありの分
+				case "s": return ("00"+that.sec()).slice(-2);//ゼロフィルありの秒
+				case "a": return that.hour<12?"am":"pm";//午前か午後か(小文字)
+				case "A": return that.hour<12?"AM":"PM";//午前か午後か(大文字)
 			}
-		}
-		return result
+		});
+		return slashes+"["+str+"]"
 	}
 	return PDate;
 })();
@@ -129,26 +114,26 @@ var PTime=(function(){
 		return 0;
 	}
 	PTime.fn.show=function(str1,str2){
+		//まだ時間になってないとき(カウントダウンしてる時)はstr1、時間が終わってる時(カウントアップしてる時)はstr2を変換して返す
 		var str="";
 		if(this.time>0) str=str1;
 		else str=str2;
-		var result="";
-		for(var i=0,j=str.length;i<j;i++){
-			switch(str.charAt(i)){
-			case "j":result+=this.date()//ゼロフィルなしの日付
-				break;
-			case "g":case "G":result+=this.hour()//ゼロフィルなしの時間(24時間単位)
-				break;
-			case "h":case "H":result+=("00"+this.hour()).slice(-2)//ゼロフィルありの時間(24時間単位)
-				break;
-			case "i":result+=("00"+this.min()).slice(-2)//ゼロフィルありの分
-				break;
-			case "s":result+=("00"+this.sec()).slice(-2)//ゼロフィルありの秒
-				break;
-			default:result+=str.charAt(i)
+		var that=this;
+		str=str.replace(/(\\*?)\[(d|HH|H|milli3|milli2|milli1|m|s)\]/g,function(a,slashes,key){
+			if(slashes.length%2==0) return a;
+			switch(key){
+				case "d": return that.date();//ゼロフィルなしの日付
+				case "HH": return ("00"+that.hour()).slice(-2);//ゼロフィルありの時間(24時間単位)
+				case "H": return that.hour();//ゼロフィルなしの時間(24時間単位)
+				case "milli3": return ("0000"+that.msec()).slice(-3);//ゼロフィルありのミリ秒
+				case "milli2": return ("0000"+that.msec()).slice(-2);//ゼロフィルありのミリ秒
+				case "milli1": return ("0000"+that.msec()).slice(-1);//ゼロフィルありのミリ秒
+				case "m": return ("00"+that.min()).slice(-2);//ゼロフィルありの分
+				case "s": return ("00"+that.sec()).slice(-2);//ゼロフィルありの秒
 			}
-		}
-		return result
+		});
+		return slashes+"["+str+"]"
+		
 	}
 	return PTime;
 })();
