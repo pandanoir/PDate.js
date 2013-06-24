@@ -88,7 +88,7 @@ var PDate=(function(){
 				case "A": return that.hour<12?"AM":"PM";//午前か午後か(大文字)
 			}
 		});
-		return slashes+"["+str+"]"
+		return slashes+str
 	}
 	return PDate;
 })();
@@ -132,7 +132,7 @@ var PTime=(function(){
 				case "s": return ("00"+that.sec()).slice(-2);//ゼロフィルありの秒
 			}
 		});
-		return slashes+"["+str+"]"
+		return slashes+str
 		
 	}
 	return PTime;
