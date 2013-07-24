@@ -1,6 +1,23 @@
 var PDate=(function(){
-	var PDate=function(date){
-		this.baseDate=date;
+	var PDate=function(year, month, day, hours, minutes, seconds, milliseconds){
+		if(Object.prototype.toString.call(year)=="[object Date]"){
+			this.baseDate=year;
+		}else if(Object.prototype.toString.call(year)=="[object String]"||(Object.prototype.toString.call(year)=="[object Number]"&&arguments.length==1)){
+			//new Date(dateString)
+			//new Date(milliseconds)
+			this.baseDate=new Date(year);
+		}else if(arguments.length>1){
+			//new Date(year, month, day, hours, minutes, seconds, milliseconds)
+			//yearは確実にあるから適当に。
+			//monthもある。ないとmillisecondsになるから
+			month-=1;
+			day=day||1;
+			hours=hours||0;
+			minutes=minutes||0;
+			seconds=seconds||0;
+			milliseconds=milliseconds||0;
+			this.baseDate=new Date(year, month, day, hours, minutes, seconds, milliseconds);
+		}
 	}
 	PDate.fn=PDate.prototype;
 	PDate.fn.Date=function(){
